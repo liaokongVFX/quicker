@@ -7,6 +7,8 @@ from PySide2.QtWidgets import *
 from PySide2.QtGui import *
 from PySide2.QtCore import *
 
+from result_item import ResultItem
+
 
 class Quicker(QDialog):
     def __init__(self, parent=None):
@@ -22,16 +24,22 @@ class Quicker(QDialog):
 
         self.init_ui()
 
+        self.add_item(u'百度搜索', u'快速进行百度搜索')
+        self.add_item(u'google搜索', u'快速进行google搜索')
+
+        self.input_line_edit.setFocus(Qt.MouseFocusReason)
+
     def init_ui(self):
         self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+
         self.setFixedSize(QSize(850, 300))
 
         self.load_style()
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
+        layout.setSpacing(5)
 
         self.input_line_edit = QLineEdit()
         self.input_line_edit.setPlaceholderText(self.placeholder)
@@ -41,8 +49,8 @@ class Quicker(QDialog):
         self.input_line_edit.returnPressed.connect(self.input_line_edit_return_pressed)
 
         # todo list高度需要根据数据个数自动调整
-        # todo 自定义listWidgetItem
         self.result_list_widget = QListWidget()
+        self.result_list_widget.setObjectName('result_list_widget')
         self.result_list_widget.setFocusPolicy(Qt.ClickFocus)
         self.result_list_widget.focusOutEvent = self.focus_out_event
 
@@ -66,6 +74,16 @@ class Quicker(QDialog):
     def show(self):
         self.input_line_edit.setText('')
         super(Quicker, self).show()
+
+    def reload_plugin(self):
+        pass
+
+    def add_item(self, title, description, icon='', date_time='', checkbox=None):
+        item = QListWidgetItem()
+        item.setSizeHint(QSize(200, 66))
+        result_item = ResultItem(title, description, icon, date_time, checkbox)
+        self.result_list_widget.addItem(item)
+        self.result_list_widget.setItemWidget(item, result_item)
 
 
 def add_action(menu, name, connect_func, parent, icon=None, shortcut=''):
@@ -91,6 +109,7 @@ if __name__ == '__main__':
     tray.setContextMenu(menu)
 
     add_action(menu, u'主界面', quicker.show, app, shortcut='ctrl+`')
+    add_action(menu, u'重载插件', quicker.reload_plugin, app)
     add_action(menu, u'退出', app.exit, app)
 
     tray.show()
