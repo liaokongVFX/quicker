@@ -24,8 +24,8 @@ class Quicker(QDialog):
 
         self.init_ui()
 
-        self.add_item(u'百度搜索', u'快速进行百度搜索')
-        self.add_item(u'google搜索', u'快速进行google搜索')
+        self.add_item(u'百度搜索', u'快速进行百度搜索', 'plugins/a.jpg')
+        self.add_item(u'google搜索', u'快速进行google搜索', 'plugins/a.jpg')
 
         self.input_line_edit.setFocus(Qt.MouseFocusReason)
 
