@@ -9,11 +9,12 @@ from PySide2.QtCore import *
 
 
 class ResultItem(QWidget):
-    def __init__(self, title, description, icon='', date_time='', checkbox=None, parent=None):
+    def __init__(self, title, description, keyword='', icon='', date_time='', checkbox=None, parent=None):
         super(ResultItem, self).__init__(parent)
 
         self.title = title
         self.description = description
+        self.keyword = keyword
         self.icon = icon
         self.date_time = date_time  # int list,eg:[2021, 1, 21, 15, 21, 11]
         self.checkbox = checkbox
@@ -24,15 +25,17 @@ class ResultItem(QWidget):
         self.setObjectName('result_item')
 
         self.main_layout = QHBoxLayout(self)
-        self.main_layout.setContentsMargins(18, 5, 5, 5)
+        self.main_layout.setContentsMargins(10, 5, 5, 5)
         self.main_layout.setSpacing(12)
 
         self.img_label = QLabel()
         self.img_label.setObjectName('img_label')
-        self.img_label.setFixedSize(50, 50)
+        self.img_label.setFixedSize(60, 60)
         if self.icon:
-            pix_map = QPixmap(self.icon).scaled(40, 40)
+            pix_map = QPixmap(self.icon).scaled(50, 50)
             self.img_label.setPixmap(pix_map)
+        else:
+            self.img_label.setText(self.keyword)
 
         self.body_layout = QVBoxLayout()
         self.body_layout.setSpacing(0)

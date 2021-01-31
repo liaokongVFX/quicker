@@ -8,7 +8,7 @@ import webbrowser
 class WebSearchPlugin(AbstractPlugin):
     url_parse = ''
 
-    def query(self, text):
+    def run(self, text, plugin_by_keyword):
         webbrowser.open(self.url_parse.format(text))
 
 
@@ -17,7 +17,7 @@ class BaiduSearchPlugin(WebSearchPlugin):
     title = u'百度搜索'
     keyword = 'baidu'
     description = u'在百度上搜索关键字'
-    url_parse = 'https://www.baidu.com/s?ie=UTF-8&wd={}'
+    url_parse = u'https://www.baidu.com/s?ie=UTF-8&wd={}'
 
 
 @register_plugin
@@ -25,7 +25,7 @@ class GoogleSearchPlugin(WebSearchPlugin):
     title = u'Google搜索'
     keyword = 'google'
     description = u'在google上搜索关键字'
-    url_parse = 'https://www.google.com/search?q={}'
+    url_parse = u'https://www.google.com/search?q={}'
 
 
 @register_plugin
@@ -33,10 +33,10 @@ class GithubSearchPlugin(WebSearchPlugin):
     title = u'Github搜索'
     keyword = 'github'
     description = u'在github上搜搜关键字'
-    url_parse = 'https://github.com/search?q={}'
+    url_parse = u'https://github.com/search?q={}'
 
 
 if __name__ == '__main__':
     b = BaiduSearchPlugin()
-    b.query('aaa')
+    b.run('aaa')
     print b.is_plugin

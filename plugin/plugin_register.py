@@ -3,6 +3,11 @@
 # Author  : LiaoKong
 import os
 import pkgutil
+from result_item import ResultItem
+
+
+class ExistedError(Exception):
+    pass
 
 
 class PluginRegister(object):
@@ -18,13 +23,30 @@ class PluginRegister(object):
                 class_obj = getattr(module, cls_str)
                 if hasattr(class_obj, 'is_plugin'):
                     obj = class_obj()
+                    if obj.keyword in self._plugins_storage:
+                        raise ExistedError('Keyword {} already exists'.format(obj.keyword))
                     self._plugins_storage[obj.keyword] = obj
 
-    def search_plugin(self,text):
-        # todo return [result_item（o.title,o.description,o.icon） for k,o in self._plugins_storage.items() if text in k]
-        pass
+    def reload_plugins(self):
+        self._plugins_storage = {}
+        self.load_plugins()
 
+    def search_plugin(self, text):
+        if not text:
+            return []
 
+        return [ResultItem(o.title, o.description, o.keyword, o.icon)
+                for k, o in sorted(self._plugins_storage.items(), key=lambda x: x[0])
+                if text in k]
+
+    def execute(self, keyword, execute_str, plugin_by_keyword):
+        return self._plugins_storage[keyword].run(execute_str, plugin_by_keyword)
+
+    def get_plugin(self, keyword):
+        return self._plugins_storage.get(keyword)
+
+    def plugins(self):
+        return self._plugins_storage
 
 
 if __name__ == '__main__':

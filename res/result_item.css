@@ -3,7 +3,10 @@
 }
 
 #img_label {
-    margin: 6px;
+    margin: 5px;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: Microsoft YaHei;
 }
 
 #title_label {
