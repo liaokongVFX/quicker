@@ -2,6 +2,7 @@
 # Time    : 2021/1/24 17:53
 # Author  : LiaoKong
 import sys
+from functools import partial
 
 from PySide2.QtWidgets import *
 from PySide2.QtGui import *
@@ -193,6 +194,11 @@ def add_action(menu, name, connect_func, parent, icon=None, shortcut=''):
     return action
 
 
+def tray_clicked(tray, quicker, reason):
+    if reason is tray.Trigger:
+        quicker.show()
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
@@ -207,6 +213,8 @@ if __name__ == '__main__':
     add_action(menu, u'主界面', quicker.show, app, shortcut='Alt+Q')
     add_action(menu, u'重载插件', quicker.reload_plugin, app)
     add_action(menu, u'退出', app.exit, app)
+
+    tray.activated.connect(partial(tray_clicked, tray, quicker))
 
     tray.show()
 
