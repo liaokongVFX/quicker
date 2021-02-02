@@ -16,17 +16,11 @@ QLineEdit {
     background-color: #303133;
 }
 
-#result_list_widget::item:hover, #result_list_widget::item:selected {
+#result_list_widget::item:selected {
     background-color: #525252;
     color: #ffffff;
 }
 
-/*#result_list_widget::item:hover{*/
-/*    background-color: #3bafda;*/
-/*    color: #FFFFFF;*/
-/*}*/
-
-/*#result_list_widget::item:selected{*/
-/*    background-color: #3bafda;*/
-/*    color: #FFFFFF;*/
-/*}*/
+#result_list_widget::item:hover {
+    background-color: #157abe;
+}

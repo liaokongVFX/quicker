@@ -13,5 +13,5 @@ class HelpPlugin(AbstractPlugin):
     close_win = False
 
     def run(self, text, plugin_by_keyword):
-        return [ResultItem(o.title, o.description, o.keyword, o.icon)
+        return [ResultItem(o.title, o.description, o.keyword, o.icon_path)
                 for o in sorted(plugin_by_keyword.values(), key=lambda x: x.keyword)]

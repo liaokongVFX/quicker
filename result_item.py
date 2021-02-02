@@ -43,7 +43,10 @@ class ResultItem(QWidget):
         self.title_layout = QHBoxLayout()
         self.title_label = QLabel()
         self.title_label.setObjectName('title_label')
-        self.title_label.setText(self.title)
+        if self.keyword:
+            self.title_label.setText(u'{} ({})'.format(self.title, self.keyword))
+        else:
+            self.title_label.setText(self.title)
         self.title_layout.addWidget(self.title_label)
         if self.date_time:
             self.date_time_edit = QDateTimeEdit()
@@ -75,7 +78,7 @@ class ResultItem(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    ri = ResultItem(u'百度搜索', u'快速进行百度搜索','plugins/a.jpg')
+    ri = ResultItem(u'百度搜索', u'快速进行百度搜索', 'plugins/a.jpg')
     ri.show()
 
     sys.exit(app.exec_())

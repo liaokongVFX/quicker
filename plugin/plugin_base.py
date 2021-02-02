@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # Time    : 2021/1/30 21:23
 # Author  : LiaoKong
+import os
+import inspect
 from functools import wraps
 
 
@@ -27,6 +29,12 @@ class AbstractPlugin(object):
 
     def __init__(self):
         self._verify_required_fields()
+
+    @property
+    def icon_path(self):
+        if self.icon:
+            return os.path.join(os.path.dirname(inspect.getfile(self.__class__)), self.icon)
+        return ''
 
     def _verify_required_fields(self):
         for field in ['title', 'keyword', 'description']:

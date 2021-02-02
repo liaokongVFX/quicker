@@ -10,6 +10,7 @@ class TestPlugin(AbstractPlugin):
     title = u'测试插件'
     description = u'测试插件内容'
     keyword = u'test'
+    icon = 'test.jpg'
 
     def run(self, text, plugin_by_keyword):
         print text

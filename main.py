@@ -31,7 +31,7 @@ class Quicker(QDialog):
 
     def init_ui(self):
         self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.Popup |Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
 
         self.setFixedSize(QSize(850, 600))
 
@@ -45,14 +45,12 @@ class Quicker(QDialog):
         self.input_line_edit.setPlaceholderText(self.placeholder)
         self.input_line_edit.setFocusPolicy(Qt.ClickFocus)
         self.input_line_edit.setMinimumHeight(66)
-        self.input_line_edit.focusOutEvent = self.focus_out_event
         self.input_line_edit.returnPressed.connect(self.input_line_edit_return_pressed)
         self.input_line_edit.textChanged.connect(self.input_line_edit_text_changed)
 
         self.result_list_widget = QListWidget()
         self.result_list_widget.setObjectName('result_list_widget')
         self.result_list_widget.setFocusPolicy(Qt.ClickFocus)
-        self.result_list_widget.focusOutEvent = self.focus_out_event
         self.result_list_widget.keyPressEvent = self.result_list_key_press_event
         self.result_list_widget.itemClicked.connect(self.execute_result_item)
 
@@ -87,7 +85,9 @@ class Quicker(QDialog):
 
         self.result_list_widget.setFixedHeight(height)
 
+    # todo 将全局keyPressEvent拆成lineedit和listwidget的keyPressEvent（现在出现了冲突）
     def keyPressEvent(self, event):
+        print 'ss'
         current_widget = QApplication.focusWidget()
         if event.key() == Qt.Key_Down:
             if self.result_list_widget.count() < 1:
@@ -110,17 +110,25 @@ class Quicker(QDialog):
             elif isinstance(current_widget, QLineEdit) and self.result_list_widget.count():
                 self.result_list_widget.setFocus(Qt.MouseFocusReason)
                 self.result_list_widget.setCurrentRow(self.result_list_widget.count() - 1)
+                return
 
+        self.input_line_edit.setFocus(Qt.MouseFocusReason)
         return super(Quicker, self).keyPressEvent(event)
 
     def result_list_key_press_event(self, event):
         if event.key() == Qt.Key_Return:
             return self.execute_result_item(self.result_list_widget.currentItem())
 
-        super(QListWidget, self.result_list_widget).keyPressEvent(event)
+        # todo 这里出现了冲突需要拆分keyPressEvent
+        self.input_line_edit.setFocus(Qt.MouseFocusReason)
+        self.result_list_widget.setCurrentRow(-1)
+        # super(QListWidget, self.result_list_widget).keyPressEvent(event)
 
     def execute_result_item(self, item):
         result_item = self.result_list_widget.itemWidget(item)
+        if not result_item:
+            return
+
         if result_item.keyword and not self.input_line_edit.text().strip().startswith(result_item.keyword):
             self.input_line_edit.setText(result_item.keyword + ' ')
             self.input_line_edit.setFocus(Qt.MouseFocusReason)
@@ -146,14 +154,6 @@ class Quicker(QDialog):
             self.close()
         else:
             self.add_items(result_items)
-
-    def focus_out_event(self, event):
-        # 如果当前没有focus的widget就关闭
-        widget = QApplication.focusWidget()
-        if isinstance(widget, QLineEdit):
-            print widget
-        if not widget and self.focus_out_close:
-            self.close()
 
     def load_style(self):
         with open('res/theme.css') as f:
@@ -196,7 +196,7 @@ def add_action(menu, name, connect_func, parent, icon=None, shortcut=''):
 
 def tray_clicked(tray, quicker, reason):
     if reason is tray.Trigger:
-        quicker.show()
+        quicker.exec_()
 
 
 if __name__ == '__main__':
@@ -210,7 +210,7 @@ if __name__ == '__main__':
     menu = QMenu()
     tray.setContextMenu(menu)
 
-    add_action(menu, u'主界面', quicker.show, app, shortcut='Alt+Q')
+    add_action(menu, u'主界面', quicker.exec_, app, shortcut='Alt+Q')
     add_action(menu, u'重载插件', quicker.reload_plugin, app)
     add_action(menu, u'退出', app.exit, app)
 

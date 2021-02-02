@@ -35,7 +35,7 @@ class PluginRegister(object):
         if not text:
             return []
 
-        return [ResultItem(o.title, o.description, o.keyword, o.icon)
+        return [ResultItem(o.title, o.description, o.keyword, o.icon_path)
                 for k, o in sorted(self._plugins_storage.items(), key=lambda x: x[0])
                 if text in k]
 
