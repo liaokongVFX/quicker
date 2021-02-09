@@ -48,6 +48,9 @@ class PluginRegister(object):
     def plugins(self):
         return self._plugins_storage
 
+    def get_keyword_by_shortcut(self):
+        return {o.shortcut: o.keyword for o in self._plugins_storage.values() if o.shortcut}
+
 
 if __name__ == '__main__':
     pr = PluginRegister()

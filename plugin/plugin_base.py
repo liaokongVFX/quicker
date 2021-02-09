@@ -26,6 +26,7 @@ class AbstractPlugin(object):
     keyword = ''
     icon = ''
     description = ''
+    shortcut = ''
 
     def __init__(self):
         self._verify_required_fields()
