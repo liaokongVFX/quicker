@@ -2,6 +2,7 @@
 # Time    : 2021/1/24 17:53
 # Author  : LiaoKong
 import sys
+import ctypes
 from functools import partial
 
 from PySide2.QtWidgets import *
@@ -33,6 +34,10 @@ if __name__ == '__main__':
     log.info(u'=========启动Quicker=============')
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
+    app.setWindowIcon(QIcon('res/launch.png'))
+
+    # 属性任务栏图标
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('quicker')
 
     tray = QSystemTrayIcon()
     quicker = Quicker()

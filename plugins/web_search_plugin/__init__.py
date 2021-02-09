@@ -15,7 +15,7 @@ class WebSearchPlugin(AbstractPlugin):
 @register_plugin
 class BaiduSearchPlugin(WebSearchPlugin):
     title = u'百度搜索'
-    keyword = 'baidu'
+    keyword = 'bd'
     description = u'在百度上搜索关键字'
     url_parse = u'https://www.baidu.com/s?ie=UTF-8&wd={}'
 
@@ -23,7 +23,7 @@ class BaiduSearchPlugin(WebSearchPlugin):
 @register_plugin
 class GoogleSearchPlugin(WebSearchPlugin):
     title = u'Google搜索'
-    keyword = 'google'
+    keyword = 'go'
     description = u'在google上搜索关键字'
     url_parse = u'https://www.google.com/search?q={}'
 

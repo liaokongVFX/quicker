@@ -36,8 +36,7 @@ class Quicker(QWidget):
 
     def init_hotkey(self):
         global_shortcut = setting.GLOBAL_HOTKEYS
-        plugin_shortcut = self._plugin_register.get_keyword_by_shortcut()
-        global_shortcut.update(plugin_shortcut)
+        global_shortcut.update(self._plugin_register.keyword_by_shortcut)
 
         hotkeys = HotkeyThread(global_shortcut, self)
         hotkeys.show_main_sign.connect(self.set_visible)
@@ -45,7 +44,9 @@ class Quicker(QWidget):
         hotkeys.start()
 
     def shortcut_triggered(self, plugin_name):
-        print plugin_name
+        if self._plugin_register.get_plugin(plugin_name):
+            self.set_show()
+            self.input_line_edit.setText(plugin_name + ' ')
 
     def init_ui(self):
         self.setAttribute(Qt.WA_TranslucentBackground)
@@ -152,7 +153,9 @@ class Quicker(QWidget):
         if not result_item:
             return
 
-        if result_item.keyword and not self.input_line_edit.text().strip().startswith(result_item.keyword):
+        input_text = self.input_line_edit.text().strip()
+        if result_item.keyword and (
+                input_text == result_item.keyword or not input_text.startswith(result_item.keyword)):
             self.input_line_edit.setText(result_item.keyword + ' ')
             self.input_line_edit.setFocus(Qt.MouseFocusReason)
             self.result_list_widget.setCurrentRow(-1)
@@ -160,16 +163,23 @@ class Quicker(QWidget):
             self.input_line_edit_return_pressed()
 
     def input_line_edit_return_pressed(self):
-        if self.result_list_widget.count() != 1:
+        if self.result_list_widget.count() < 1:
             # todo 弹出没有关键字的提示
             return
 
         text = self.input_line_edit.text().strip()
-        if len(text.strip().split(' ', 1)) == 2:
+        if len(text.split(' ', 1)) == 2:
             plugin_keyword, execute_str = text.strip().split(' ', 1)
         else:
-            plugin_keyword = self.result_list_widget.itemWidget(self.result_list_widget.item(0)).keyword
+            plugin_keyword = next(iter(
+                self.result_list_widget.itemWidget(self.result_list_widget.item(i)).keyword
+                for i in range(self.result_list_widget.count()) if
+                self.result_list_widget.itemWidget(self.result_list_widget.item(i)).keyword == text
+            ), '')
             execute_str = ''
+
+        if not plugin_keyword:
+            return
 
         result_items = self._plugin_register.execute(plugin_keyword, execute_str, self._plugin_register.plugins())
 
@@ -208,6 +218,9 @@ class Quicker(QWidget):
             self.input_line_edit.setText('')
             self.setVisible(False)
         else:
-            self.setVisible(True)
-            self.activateWindow()
-            self.input_line_edit.setFocus(Qt.MouseFocusReason)
+            self.set_show()
+
+    def set_show(self):
+        self.setVisible(True)
+        self.activateWindow()
+        self.input_line_edit.setFocus(Qt.MouseFocusReason)

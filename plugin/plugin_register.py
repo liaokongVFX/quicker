@@ -13,6 +13,7 @@ class ExistedError(Exception):
 class PluginRegister(object):
     def __init__(self):
         self._plugins_storage = {}
+        self.keyword_by_shortcut = {}
         self.load_plugins()
 
     def load_plugins(self):
@@ -27,8 +28,11 @@ class PluginRegister(object):
                         raise ExistedError('Keyword {} already exists'.format(obj.keyword))
                     self._plugins_storage[obj.keyword] = obj
 
+        self.init_keyword_by_shortcut()
+
     def reload_plugins(self):
         self._plugins_storage = {}
+        self.keyword_by_shortcut = {}
         self.load_plugins()
 
     def search_plugin(self, text):
@@ -48,8 +52,8 @@ class PluginRegister(object):
     def plugins(self):
         return self._plugins_storage
 
-    def get_keyword_by_shortcut(self):
-        return {o.shortcut: o.keyword for o in self._plugins_storage.values() if o.shortcut}
+    def init_keyword_by_shortcut(self):
+        self.keyword_by_shortcut = {o.shortcut: o.keyword for o in self._plugins_storage.values() if o.shortcut}
 
 
 if __name__ == '__main__':
