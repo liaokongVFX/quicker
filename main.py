@@ -9,10 +9,10 @@ from PySide2.QtWidgets import *
 from PySide2.QtGui import *
 from PySide2.QtCore import *
 
-from gui import Quicker
+from quicker import Quicker
 from utils import get_logger
 
-log = get_logger(u'主窗口')
+log = get_logger(u'托盘')
 
 
 def add_action(menu, name, connect_func, parent, icon=None):

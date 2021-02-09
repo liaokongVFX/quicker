@@ -19,7 +19,6 @@ class Quicker(QWidget):
         super(Quicker, self).__init__(parent)
 
         self.placeholder = u'请输入关键字'
-        self.focus_out_close = True
         self.RESULT_ITEM_HEIGHT = 62
 
         pos = QDesktopWidget().availableGeometry().center()

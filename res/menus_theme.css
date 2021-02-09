@@ -1,0 +1,56 @@
+#header_widget {
+    background: #303133;
+    border: 2px solid #666666;
+    margin-right: 1px;
+}
+
+QLabel {
+    font-weight: 700;
+    font-size: 14px;
+    color: #999999;
+    font-family: Microsoft YaHei;
+}
+
+#action_list_widget {
+    border: transparent;
+    outline: none;
+    padding: 0;
+    background-color: #303133;
+    color: #cccccc;
+    font-size: 16px;
+    font-family: Microsoft YaHei;
+    font-weight: 700;
+}
+
+#action_list_widget::item {
+    border: 1px solid #666666;
+    border-top: 1px solid transparent;
+    padding-left: 8px;
+}
+
+#action_list_widget::item:hover {
+    background-color: #157abe;
+}
+
+QScrollBar:vertical {
+    max-width: 2px;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-bottom: 1px solid #666666;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #666666;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #666666;
+}
+
+QScrollBar::add-line:vertical {
+    background-color: #303133;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background-color: #303133;
+}

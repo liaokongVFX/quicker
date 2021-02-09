@@ -27,7 +27,8 @@ class AbstractPlugin(object):
     icon = ''
     description = ''
     shortcut = ''
-    main_window = None  # 这个值不需要初始化，在插件加载时，会自动设置他为Quicker对象，可以在插件中调用Quicker的方法
+
+    main_window = None  # 这个值不需要初始化，在插件加载时，会自动设置为全局Quicker对象
 
     def __init__(self):
         self._verify_required_fields()
