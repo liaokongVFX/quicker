@@ -29,7 +29,7 @@ class Quicker(QWidget):
 
         self.init_ui()
 
-        self._plugin_register = PluginRegister()
+        self._plugin_register = PluginRegister(self)
         self.init_hotkey()
 
         self.update_result_list_height(0)
@@ -164,7 +164,6 @@ class Quicker(QWidget):
 
     def input_line_edit_return_pressed(self):
         if self.result_list_widget.count() < 1:
-            # todo 弹出没有关键字的提示
             return
 
         text = self.input_line_edit.text().strip()

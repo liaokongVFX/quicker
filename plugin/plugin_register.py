@@ -11,7 +11,8 @@ class ExistedError(Exception):
 
 
 class PluginRegister(object):
-    def __init__(self):
+    def __init__(self, main_window):
+        self.main_window = main_window
         self._plugins_storage = {}
         self.keyword_by_shortcut = {}
         self.load_plugins()
@@ -26,6 +27,7 @@ class PluginRegister(object):
                     obj = class_obj()
                     if obj.keyword in self._plugins_storage:
                         raise ExistedError('Keyword {} already exists'.format(obj.keyword))
+                    obj.main_window = self.main_window
                     self._plugins_storage[obj.keyword] = obj
 
         self.init_keyword_by_shortcut()
