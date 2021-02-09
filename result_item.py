@@ -23,6 +23,7 @@ class ResultItem(QWidget):
 
     def init_ui(self):
         self.setObjectName('result_item')
+        self.setCursor(QCursor(Qt.PointingHandCursor))
 
         self.main_layout = QHBoxLayout(self)
         self.main_layout.setContentsMargins(10, 5, 5, 5)

@@ -86,11 +86,6 @@ class Quicker(QWidget):
             self.set_visible()
         return QObject.eventFilter(self, obj, event)  # 交由其他控件处理
 
-    def keyReleaseEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.set_visible()
-        super(Quicker, self).keyReleaseEvent(event)
-
     def input_line_edit_text_changed(self, text):
         if (text.endswith(' ') and
                 self.result_list_widget.count() == 1 and
@@ -116,8 +111,10 @@ class Quicker(QWidget):
 
         self.result_list_widget.setFixedHeight(height)
 
-    # todo 将全局keyPressEvent拆成lineedit和listwidget的keyPressEvent（现在出现了冲突）
     def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.set_visible()
+
         current_widget = QApplication.focusWidget()
         if event.key() == Qt.Key_Down:
             if self.result_list_widget.count() < 1:
@@ -142,17 +139,13 @@ class Quicker(QWidget):
                 self.result_list_widget.setCurrentRow(self.result_list_widget.count() - 1)
                 return
 
-        self.input_line_edit.setFocus(Qt.MouseFocusReason)
         return super(Quicker, self).keyPressEvent(event)
 
     def result_list_key_press_event(self, event):
         if event.key() == Qt.Key_Return:
             return self.execute_result_item(self.result_list_widget.currentItem())
 
-        # todo 这里出现了冲突需要拆分keyPressEvent
-        self.input_line_edit.setFocus(Qt.MouseFocusReason)
-        self.result_list_widget.setCurrentRow(-1)
-        # super(QListWidget, self.result_list_widget).keyPressEvent(event)
+        super(QListWidget, self.result_list_widget).keyPressEvent(event)
 
     def execute_result_item(self, item):
         result_item = self.result_list_widget.itemWidget(item)
@@ -212,14 +205,9 @@ class Quicker(QWidget):
 
     def set_visible(self):
         if self.isVisible():
+            self.input_line_edit.setText('')
             self.setVisible(False)
         else:
             self.setVisible(True)
             self.activateWindow()
             self.input_line_edit.setFocus(Qt.MouseFocusReason)
-        # print 'AAAA'
-        # self.input_line_edit.setText('')
-        # self.input_line_edit.setFocus(Qt.MouseFocusReason)
-        # self.activateWindow()
-        # print 'bbbb'
-        # self.exec_()

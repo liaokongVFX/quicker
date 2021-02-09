@@ -26,7 +26,7 @@ QLineEdit {
 }
 
 QScrollBar:vertical {
-    max-width: 6px;
+    max-width: 3px;
     padding-top: 0;
     padding-bottom: 0;
     border-bottom: 1px solid #666666;

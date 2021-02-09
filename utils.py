@@ -34,7 +34,6 @@ class SingleLogger(object):
 
     def info(self, msg, *args, **kwargs):
         kwargs = self.add_name_info(kwargs)
-        print(kwargs)
         self.log.info(msg, *args, **kwargs)
 
     def warning(self, msg, *args, **kwargs):
