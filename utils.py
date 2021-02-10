@@ -51,26 +51,29 @@ class SingleLogger(object):
 
 
 class EmptyLogger(object):
+    def __init__(self, name):
+        self.title = u'- {} - '.format(name)
+
     def info(self, msg, *args, **kwargs):
         if DEBUG:
-            print msg
+            print self.title + msg
         return
 
     def warning(self, msg, *args, **kwargs):
         if DEBUG:
-            print msg
+            print self.title + msg
         return
 
     def error(self, msg, *args, **kwargs):
         if DEBUG:
-            print msg
+            print self.title + msg
         return
 
 
 def get_logger(name):
     if RECORD_LOG:
         return SingleLogger(name)
-    return EmptyLogger()
+    return EmptyLogger(name)
 
 
 def clear_clipboard():
