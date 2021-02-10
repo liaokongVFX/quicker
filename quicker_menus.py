@@ -1,22 +1,39 @@
 # -*- coding: utf-8 -*-
 # Time    : 2021/2/9 20:13
 # Author  : LiaoKong
+import os
 
 from PySide2.QtWidgets import *
 from PySide2.QtGui import *
 from PySide2.QtCore import *
 
+from core import action_base
+
 
 class QuickerMenusWidget(QWidget):
-    def __init__(self, title, menus_actions, parent=None):
+    def __init__(self, data, parent=None):
         super(QuickerMenusWidget, self).__init__(parent)
-        self.title = title
-        self.menus_action = menus_actions
+        self.title = u'没有选中文件或文字'
+        self.action_type = action_base.EMPTY
         self.ACTION_ITEM_HEIGHT = 40
 
+        self.init_data(data)
         self.init_ui()
 
-        self.add_items(self.menus_action)
+        # self.add_items(self.menus_action)
+
+    def init_data(self, data):
+        if data['type'] == 'text':
+            self.title = u'已选中{}个字'.format(len(data['text']))
+            self.action_type = action_base.TEXT
+        elif data['type'] == 'urls':
+            urls_num = len(data['urls'])
+            if urls_num == 1:
+                self.title = u'已选中 {}'.format(os.path.basename(data['urls'][0]))
+                self.action_type = action_base.FILE
+            else:
+                self.title = u'已选中{}个文件'.format(urls_num)
+                self.action_type = action_base.MULT_FILES
 
     def init_ui(self):
         self.setAttribute(Qt.WA_TranslucentBackground)
@@ -31,7 +48,7 @@ class QuickerMenusWidget(QWidget):
         header_widget = QFrame()
         header_widget.setObjectName('header_widget')
         header_layout = QHBoxLayout()
-        header_layout.setContentsMargins(8, 2, 22, 0)
+        header_layout.setContentsMargins(8, 2, 12, 0)
         icon_label = QLabel()
         icon_label.setFixedSize(32, 32)
         pix_map = QPixmap('res/menus_title.png').scaled(32, 32, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
@@ -54,6 +71,7 @@ class QuickerMenusWidget(QWidget):
         v_layout.addItem(QSpacerItem(40, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         self.activateWindow()
+        self.update_action_list_height(0)
 
     def update_action_list_height(self, action_items_num):
         # list高度需要根据数据个数自动调整
@@ -79,7 +97,6 @@ class QuickerMenusWidget(QWidget):
 
     def show_window(self):
         pos = QCursor.pos()
-        pos.setX(pos.x() - 100)
         pos.setY(pos.y() - 50)
         self.move(pos)
         self.show()

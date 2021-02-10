@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Time    : 2021/1/30 21:23
 # Author  : LiaoKong
-from plugin.plugin_base import AbstractPlugin, register_plugin
+from core.plugin_base import AbstractPlugin, register_plugin
 import webbrowser
 
 

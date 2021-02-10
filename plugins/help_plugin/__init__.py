@@ -2,7 +2,7 @@
 # Time    : 2021/1/31 20:27
 # Author  : LiaoKong
 from result_item import ResultItem
-from plugin.plugin_base import AbstractPlugin, register_plugin
+from core.plugin_base import AbstractPlugin, register_plugin
 
 
 @register_plugin

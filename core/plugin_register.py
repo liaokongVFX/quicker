@@ -4,10 +4,9 @@
 import os
 import pkgutil
 from result_item import ResultItem
+from utils import get_logger
 
-
-class ExistedError(Exception):
-    pass
+log = get_logger(u'注册插件')
 
 
 class PluginRegister(object):
@@ -16,6 +15,10 @@ class PluginRegister(object):
         self._plugins_storage = {}
         self.keyword_by_shortcut = {}
         self.load_plugins()
+
+        self._check_shortcuts()
+        log.info(u'插件已加载完成.')
+        log.info(self._plugins_storage)
 
     def load_plugins(self):
         for importer, package_name, _ in pkgutil.iter_modules(
@@ -26,16 +29,24 @@ class PluginRegister(object):
                 if hasattr(class_obj, 'is_plugin'):
                     obj = class_obj()
                     if obj.keyword in self._plugins_storage:
-                        raise ExistedError('Keyword {} already exists'.format(obj.keyword))
+                        log.error('Keyword {} already exists.'.format(obj.keyword))
+                        raise ValueError('Keyword already exists.')
                     obj.main_window = self.main_window
                     self._plugins_storage[obj.keyword] = obj
 
-        self.init_keyword_by_shortcut()
+    def _check_shortcuts(self):
+        """检查快捷键是否有重复的"""
+        shortcuts = [x for x in self._plugins_storage.values() if x.shortcut]
+        if len(shortcuts) != len(set(shortcuts)):
+            log.error('There are duplicate shortcuts')
+            log.error('shortcuts: {}'.format(shortcuts))
+            raise ValueError('There are duplicate shortcuts.')
 
     def reload_plugins(self):
         self._plugins_storage = {}
         self.keyword_by_shortcut = {}
         self.load_plugins()
+        log.info(u'插件已成功重新加载')
 
     def search_plugin(self, text):
         if not text:
@@ -54,8 +65,8 @@ class PluginRegister(object):
     def plugins(self):
         return self._plugins_storage
 
-    def init_keyword_by_shortcut(self):
-        self.keyword_by_shortcut = {o.shortcut: o.keyword for o in self._plugins_storage.values() if o.shortcut}
+    def get_keyword_by_shortcut(self):
+        return {o.shortcut: o.keyword for o in self._plugins_storage.values() if o.shortcut}
 
 
 if __name__ == '__main__':

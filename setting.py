@@ -3,6 +3,7 @@
 # Author  : LiaoKong
 
 RECORD_LOG = True
+DEBUG = True
 
 GLOBAL_HOTKEYS = {
     'ctrl+`': '',

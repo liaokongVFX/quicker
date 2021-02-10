@@ -33,7 +33,7 @@ class ResultItem(QWidget):
         self.img_label.setObjectName('img_label')
         self.img_label.setFixedSize(60, 60)
         if self.icon:
-            pix_map = QPixmap(self.icon).scaled(50, 50)
+            pix_map = QPixmap(self.icon).scaled(50, 50, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
             self.img_label.setPixmap(pix_map)
         else:
             self.img_label.setText(self.keyword)

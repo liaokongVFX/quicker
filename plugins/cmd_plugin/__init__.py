@@ -3,7 +3,7 @@
 # Author  : LiaoKong
 import os
 
-from plugin.plugin_base import AbstractPlugin, register_plugin
+from core.plugin_base import AbstractPlugin, register_plugin
 
 
 @register_plugin

@@ -2,7 +2,7 @@
 # Time    : 2021/1/31 15:48
 # Author  : LiaoKong
 
-from plugin.plugin_base import AbstractPlugin, register_plugin
+from core.plugin_base import AbstractPlugin, register_plugin
 
 
 @register_plugin

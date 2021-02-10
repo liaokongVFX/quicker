@@ -1,19 +1,24 @@
 # -*- coding: utf-8 -*-
 # Time    : 2021/2/8 18:38
 # Author  : LiaoKong
+import os
 import sys
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
 from ctypes import windll
-from setting import RECORD_LOG
+from setting import RECORD_LOG, DEBUG
 
 
 class SingleLogger(object):
+    log_path = './log/Quicker.log'
+    if not os.path.exists(os.path.dirname(log_path)):
+        os.makedirs(os.path.dirname(log_path))
+
     log = logging.getLogger('Beefalo')
     log.setLevel(logging.INFO)
     formatter = logging.Formatter('%(asctime)s - %(plugin_name)s - %(levelname)s - %(message)s')
-    log_file_handler = TimedRotatingFileHandler(filename='./log/Quicker.log', when='D', encoding='utf-8')
+    log_file_handler = TimedRotatingFileHandler(filename=log_path, when='D', encoding='utf-8')
     log_file_handler.setFormatter(formatter)
     log_file_handler.setLevel(logging.INFO)
     log.addHandler(log_file_handler)
@@ -45,9 +50,27 @@ class SingleLogger(object):
         self.log.error(msg, *args, **kwargs)
 
 
+class EmptyLogger(object):
+    def info(self, msg, *args, **kwargs):
+        if DEBUG:
+            print msg
+        return
+
+    def warning(self, msg, *args, **kwargs):
+        if DEBUG:
+            print msg
+        return
+
+    def error(self, msg, *args, **kwargs):
+        if DEBUG:
+            print msg
+        return
+
+
 def get_logger(name):
     if RECORD_LOG:
         return SingleLogger(name)
+    return EmptyLogger()
 
 
 def clear_clipboard():

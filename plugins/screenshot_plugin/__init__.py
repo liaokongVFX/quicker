@@ -5,7 +5,7 @@ import os
 import subprocess
 from PySide2.QtWidgets import QApplication, QFileDialog
 
-from plugin.plugin_base import register_plugin, AbstractPlugin
+from core.plugin_base import register_plugin, AbstractPlugin
 
 
 @register_plugin

@@ -2,16 +2,20 @@
 # Time    : 2021/2/8 20:32
 # Author  : LiaoKong
 import os
-import json
-from functools import partial
+import time
 
 from PySide2.QtWidgets import *
 from PySide2.QtGui import *
 from PySide2.QtCore import *
 
-from plugin.plugin_register import PluginRegister
+from core.plugin_register import PluginRegister
 from hotkey import HotkeyThread
+from quicker_menus import QuickerMenusWidget
+from libs import keyboard
 import setting
+import utils
+
+log = utils.get_logger(u'Quicker')
 
 
 class Quicker(QWidget):
@@ -20,6 +24,7 @@ class Quicker(QWidget):
 
         self.placeholder = u'请输入关键字'
         self.RESULT_ITEM_HEIGHT = 62
+        self.clipboard = QApplication.clipboard()
 
         pos = QDesktopWidget().availableGeometry().center()
         pos.setX(pos.x() - (self.width() / 2) - 150)
@@ -34,10 +39,16 @@ class Quicker(QWidget):
         self.update_result_list_height(0)
 
     def init_hotkey(self):
-        global_shortcut = setting.GLOBAL_HOTKEYS
-        global_shortcut.update(self._plugin_register.keyword_by_shortcut)
+        global_shortcuts = setting.GLOBAL_HOTKEYS
+        plugin_shortcuts = self._plugin_register.get_keyword_by_shortcut()
+        if set(global_shortcuts) & set(plugin_shortcuts):
+            log.error('There are duplicate shortcuts.')
+            log.error(u'global_shortcuts: {}'.format(global_shortcuts))
+            log.error(u'plugin_shortcuts: {}'.format(plugin_shortcuts))
+            raise ValueError('There are duplicate shortcuts.')
+        global_shortcuts.update(self._plugin_register.get_keyword_by_shortcut())
 
-        hotkeys = HotkeyThread(global_shortcut, self)
+        hotkeys = HotkeyThread(global_shortcuts, self)
         hotkeys.show_main_sign.connect(self.set_visible)
         hotkeys.shortcut_triggered.connect(self.shortcut_triggered)
         hotkeys.start()
@@ -46,6 +57,37 @@ class Quicker(QWidget):
         if self._plugin_register.get_plugin(plugin_name):
             self.set_show()
             self.input_line_edit.setText(plugin_name + ' ')
+
+        if plugin_name in setting.GLOBAL_HOTKEYS.values():
+            getattr(self, plugin_name)()
+
+    def show_menus(self):
+        utils.clear_clipboard()
+        keyboard.press_and_release('ctrl+c')
+        time.sleep(0.25)
+
+        urls = self.clipboard.mimeData().urls()
+        urls = [u.toLocalFile() for u in urls if os.path.exists(u.toLocalFile())]
+        text = self.clipboard.mimeData().text()
+
+        if not urls and not text:
+            data = {
+                'type': 'empty'
+            }
+        elif not urls and text:
+            data = {
+                'type': 'text',
+                'text': text
+            }
+        else:
+            data = {
+                'type': 'urls',
+                'urls': urls
+            }
+
+        log.info(u'已调用quicker menus，{}'.format(data))
+        menus_widget = QuickerMenusWidget(data, self)
+        menus_widget.show_window()
 
     def init_ui(self):
         self.setAttribute(Qt.WA_TranslucentBackground)
