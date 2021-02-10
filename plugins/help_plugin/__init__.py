@@ -2,10 +2,11 @@
 # Time    : 2021/1/31 20:27
 # Author  : LiaoKong
 from result_item import ResultItem
-from core.plugin_base import AbstractPlugin, register_plugin
+from core import register
+from core.plugin_base import AbstractPlugin
 
 
-@register_plugin
+@register
 class HelpPlugin(AbstractPlugin):
     title = u'帮助'
     keyword = 'help'

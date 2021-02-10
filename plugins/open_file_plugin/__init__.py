@@ -2,10 +2,11 @@
 # Time    : 2021/2/9 16:46
 # Author  : LiaoKong
 import os
-from core.plugin_base import AbstractPlugin, register_plugin
+from core import register
+from core.plugin_base import AbstractPlugin
 
 
-@register_plugin
+@register
 class OpenFilePlugin(AbstractPlugin):
     title = u'打开文件'
     keyword = 'cd'

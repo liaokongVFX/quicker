@@ -2,10 +2,11 @@
 # Time    : 2021/1/31 15:48
 # Author  : LiaoKong
 
-from core.plugin_base import AbstractPlugin, register_plugin
+from core import register
+from core.plugin_base import AbstractPlugin
 
 
-@register_plugin
+@register
 class TestPlugin(AbstractPlugin):
     title = u'测试插件'
     description = u'测试插件内容'
@@ -16,7 +17,7 @@ class TestPlugin(AbstractPlugin):
         print text
 
 
-@register_plugin
+@register
 class TestPlugin1(AbstractPlugin):
     title = u'测试插件'
     description = u'测试插件内容'

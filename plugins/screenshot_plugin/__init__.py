@@ -5,10 +5,11 @@ import os
 import subprocess
 from PySide2.QtWidgets import QApplication, QFileDialog
 
-from core.plugin_base import register_plugin, AbstractPlugin
+from core import register
+from core.plugin_base import AbstractPlugin
 
 
-@register_plugin
+@register
 class ScreenshotPlugin(AbstractPlugin):
     title = u'截图'
     keyword = 'scr'

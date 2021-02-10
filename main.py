@@ -11,6 +11,7 @@ from PySide2.QtCore import *
 
 from quicker import Quicker
 from utils import get_logger
+import setting
 
 log = get_logger(u'托盘')
 
@@ -47,7 +48,9 @@ if __name__ == '__main__':
     tray.setContextMenu(menu)
 
     add_action(menu, u'主界面', quicker.set_visible, app)
-    add_action(menu, u'重载插件', quicker.reload_plugin, app)
+    if setting.DEBUG:
+        add_action(menu, u'重载插件', quicker.reload_plugin, app)
+        add_action(menu, u'重载actions', quicker.reload_actions, app)
     add_action(menu, u'退出', app.exit, app)
 
     tray.activated.connect(partial(tray_clicked, tray, quicker))

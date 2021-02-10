@@ -11,25 +11,38 @@ from core import action_base
 
 
 class QuickerMenusWidget(QWidget):
-    def __init__(self, data, parent=None):
+    def __init__(self, raw_data, parent=None):
         super(QuickerMenusWidget, self).__init__(parent)
+        self.raw_data = raw_data
         self.title = u'没有选中文件或文字'
         self.action_type = action_base.EMPTY
+        self.data = ''
         self.ACTION_ITEM_HEIGHT = 40
 
-        self.init_data(data)
+        self.init_data()
         self.init_ui()
+        self.init_list_widget()
 
-        # self.add_items(self.menus_action)
+    def init_list_widget(self):
+        items = self.parent().action_register.get_actions(self.action_type)
+        if self.action_type == action_base.FILE:
+            items = [i for i in items if not i.exts or self.raw_data['urls'][0].lower().endswith(tuple(i.exts))]
 
-    def init_data(self, data):
-        if data['type'] == 'text':
-            self.title = u'已选中{}个字'.format(len(data['text']))
+        self.add_items(items)
+
+    def init_data(self):
+        if self.raw_data['type'] == 'text':
+            self.title = u'已选中{}个字'.format(len(self.raw_data['text']))
             self.action_type = action_base.TEXT
-        elif data['type'] == 'urls':
-            urls_num = len(data['urls'])
+            self.data = self.raw_data['text']
+        elif self.raw_data['type'] == 'urls':
+            urls_num = len(self.raw_data['urls'])
+            self.data = self.raw_data['urls']
             if urls_num == 1:
-                self.title = u'已选中 {}'.format(os.path.basename(data['urls'][0]))
+                file_name = os.path.basename(self.raw_data['urls'][0])
+                if os.path.isfile(self.raw_data['urls'][0]):
+                    file_name = file_name.rsplit('.', 1)[0]
+                self.title = u'已选中 {}'.format(file_name)
                 self.action_type = action_base.FILE
             else:
                 self.title = u'已选中{}个文件'.format(urls_num)
@@ -56,6 +69,7 @@ class QuickerMenusWidget(QWidget):
 
         self.title_label = QLabel()
         self.title_label.setText(self.title)
+        self.title_label.setToolTip('\n'.join(self.data) if isinstance(self.data, list) else self.data)
 
         header_layout.addWidget(icon_label)
         header_layout.addItem(QSpacerItem(60, 50, QSizePolicy.Expanding, QSizePolicy.Minimum))
@@ -65,6 +79,7 @@ class QuickerMenusWidget(QWidget):
 
         self.action_list_widget = QListWidget()
         self.action_list_widget.setObjectName('action_list_widget')
+        self.action_list_widget.itemClicked.connect(self.action_list_widget_item_clicked)
 
         v_layout.addWidget(header_widget)
         v_layout.addWidget(self.action_list_widget)
@@ -72,6 +87,10 @@ class QuickerMenusWidget(QWidget):
 
         self.activateWindow()
         self.update_action_list_height(0)
+
+    def action_list_widget_item_clicked(self, item):
+        self.close()
+        item.action_obj.run(self.data)
 
     def update_action_list_height(self, action_items_num):
         # list高度需要根据数据个数自动调整
@@ -89,9 +108,11 @@ class QuickerMenusWidget(QWidget):
 
         self.update_action_list_height(len(action_items))
 
-    def add_item(self, text):
-        item = QListWidgetItem(QIcon('res/launch.png'), text)
+    def add_item(self, action_obj):
+        item = QListWidgetItem(QIcon(action_obj.icon_path), action_obj.title)
         item.setSizeHint(QSize(200, self.ACTION_ITEM_HEIGHT))
+        item.setToolTip(action_obj.description)
+        item.action_obj = action_obj
 
         self.action_list_widget.addItem(item)
 

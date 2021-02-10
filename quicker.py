@@ -9,6 +9,7 @@ from PySide2.QtGui import *
 from PySide2.QtCore import *
 
 from core.plugin_register import PluginRegister
+from core.action_register import ActionRegister
 from hotkey import HotkeyThread
 from quicker_menus import QuickerMenusWidget
 from libs import keyboard
@@ -33,20 +34,21 @@ class Quicker(QWidget):
 
         self.init_ui()
 
-        self._plugin_register = PluginRegister(self)
+        self.plugin_register = PluginRegister(self)
+        self.action_register = ActionRegister()
         self.init_hotkey()
 
         self.update_result_list_height(0)
 
     def init_hotkey(self):
         global_shortcuts = setting.GLOBAL_HOTKEYS
-        plugin_shortcuts = self._plugin_register.get_keyword_by_shortcut()
+        plugin_shortcuts = self.plugin_register.get_keyword_by_shortcut()
         if set(global_shortcuts) & set(plugin_shortcuts):
             log.error('There are duplicate shortcuts.')
             log.error(u'global_shortcuts: {}'.format(global_shortcuts))
             log.error(u'plugin_shortcuts: {}'.format(plugin_shortcuts))
             raise ValueError('There are duplicate shortcuts.')
-        global_shortcuts.update(self._plugin_register.get_keyword_by_shortcut())
+        global_shortcuts.update(self.plugin_register.get_keyword_by_shortcut())
 
         hotkeys = HotkeyThread(global_shortcuts, self)
         hotkeys.show_main_sign.connect(self.set_visible)
@@ -54,7 +56,7 @@ class Quicker(QWidget):
         hotkeys.start()
 
     def shortcut_triggered(self, plugin_name):
-        if self._plugin_register.get_plugin(plugin_name):
+        if self.plugin_register.get_plugin(plugin_name):
             self.set_show()
             self.input_line_edit.setText(plugin_name + ' ')
 
@@ -140,7 +142,7 @@ class Quicker(QWidget):
 
         if ' ' not in text.strip():
             plugin_keyword = text.strip()
-            result_items = self._plugin_register.search_plugin(plugin_keyword)
+            result_items = self.plugin_register.search_plugin(plugin_keyword)
             self.add_items(result_items)
         else:
             plugin_keyword, query_str = text.strip().split(' ', 1)
@@ -221,7 +223,7 @@ class Quicker(QWidget):
         if not plugin_keyword:
             return
 
-        result_items = self._plugin_register.execute(plugin_keyword, execute_str, self._plugin_register.plugins())
+        result_items = self.plugin_register.execute(plugin_keyword, execute_str, self.plugin_register.plugins())
 
         if not result_items:
             self.close()
@@ -237,7 +239,10 @@ class Quicker(QWidget):
         super(Quicker, self).show()
 
     def reload_plugin(self):
-        self._plugin_register.reload_plugins()
+        self.plugin_register.reload_plugins()
+
+    def reload_actions(self):
+        self.action_register.reload_actions()
 
     def add_items(self, result_items):
         self.result_list_widget.clear()

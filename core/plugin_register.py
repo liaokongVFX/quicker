@@ -12,21 +12,20 @@ log = get_logger(u'注册插件')
 class PluginRegister(object):
     def __init__(self, main_window):
         self.main_window = main_window
-        self._plugins_storage = {}
-        self.keyword_by_shortcut = {}
-        self.load_plugins()
+        self._load_plugins()
 
         self._check_shortcuts()
         log.info(u'插件已加载完成.')
         log.info(self._plugins_storage)
 
-    def load_plugins(self):
+    def _load_plugins(self):
+        self._plugins_storage = {}
         for importer, package_name, _ in pkgutil.iter_modules(
                 [os.path.join(os.path.dirname(os.path.dirname(__file__)), 'plugins')]):
             module = importer.find_module(package_name).load_module(package_name)
             for cls_str in dir(module):
                 class_obj = getattr(module, cls_str)
-                if hasattr(class_obj, 'is_plugin'):
+                if hasattr(class_obj, 'need_register'):
                     obj = class_obj()
                     if obj.keyword in self._plugins_storage:
                         log.error('Keyword {} already exists.'.format(obj.keyword))
@@ -43,10 +42,9 @@ class PluginRegister(object):
             raise ValueError('There are duplicate shortcuts.')
 
     def reload_plugins(self):
-        self._plugins_storage = {}
-        self.keyword_by_shortcut = {}
-        self.load_plugins()
+        self._load_plugins()
         log.info(u'插件已成功重新加载')
+        log.info(self._plugins_storage)
 
     def search_plugin(self, text):
         if not text:
@@ -70,4 +68,4 @@ class PluginRegister(object):
 
 
 if __name__ == '__main__':
-    pr = PluginRegister()
+    pr = PluginRegister(None)
