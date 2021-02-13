@@ -5,11 +5,12 @@ import os
 import time
 
 from PySide2.QtWidgets import *
-from PySide2.QtGui import *
 from PySide2.QtCore import *
 
+from notification import NotificationWindow
 from core.plugin_register import PluginRegister
 from core.action_register import ActionRegister
+from timing_tasks_manager import TimingTasksManager
 from hotkey import HotkeyThread
 from quicker_menus import QuickerMenusWidget
 from libs import keyboard
@@ -35,10 +36,19 @@ class Quicker(QWidget):
         self.init_ui()
 
         self.plugin_register = PluginRegister(self)
-        self.action_register = ActionRegister()
+        self.action_register = ActionRegister(self)
+
+        # 定时任务
+        self.timing_task_manager = TimingTasksManager()
+        self.timing_task_manager.show_msg_sig.connect(self.show_timing_task_msg)
+
         self.init_hotkey()
 
         self.update_result_list_height(0)
+
+    @staticmethod
+    def show_timing_task_msg(msg):
+        NotificationWindow.success(u'提醒', msg)
 
     def init_hotkey(self):
         global_shortcuts = setting.GLOBAL_HOTKEYS

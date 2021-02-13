@@ -9,7 +9,8 @@ log = get_logger(u'注册menu action')
 
 
 class ActionRegister(object):
-    def __init__(self):
+    def __init__(self, main_window):
+        self.main_window = main_window
         self._load_actions()
         log.info(u'action已加载完成')
         log.info(self._actions_storage)
@@ -23,6 +24,7 @@ class ActionRegister(object):
                 class_obj = getattr(module, cls_str)
                 if hasattr(class_obj, 'need_register'):
                     obj = class_obj()
+                    obj.main_window = self.main_window
                     for action_type in obj.action_types:
                         self._actions_storage.setdefault(action_type, []).append(obj)
 
