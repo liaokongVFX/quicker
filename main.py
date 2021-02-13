@@ -52,6 +52,7 @@ if __name__ == '__main__':
         add_action(menu, u'重载插件', quicker.reload_plugin, app)
         add_action(menu, u'重载actions', quicker.reload_actions, app)
     add_action(menu, u'退出', app.exit, app)
+    # todo 添加定时提醒编辑和删除菜单
 
     tray.activated.connect(partial(tray_clicked, tray, quicker))
 
