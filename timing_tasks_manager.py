@@ -35,7 +35,7 @@ class TimingTasksManager(QObject):
         # todo 从本地加载上次设置的定时任务
         pass
 
-    def add_job(self, job_type, kwargs):
+    def add_remind(self, job_type, kwargs):
         msg = kwargs.pop('msg')
         obj = self.scheduler.add_job(lambda: self.show_msg(msg), job_type, **kwargs)
         self._jobs_storage[obj.id] = obj
