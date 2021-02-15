@@ -4,9 +4,6 @@
 from datetime import datetime
 
 from PySide2.QtWidgets import *
-from PySide2.QtGui import *
-from PySide2.QtCore import *
-
 from libs import qflat
 
 from ui.ui import Ui_Dialog
@@ -31,7 +28,7 @@ class TimedReminderWidget(QDialog, Ui_Dialog):
         if self.date_radio.isChecked():
             self.data = {
                 'trigger': 'date',
-                'run_date': self.date_time_edit.dateTime().toPython()
+                'run_date': self.date_time_edit.dateTime().toString('yyyy-MM-dd hh:mm:ss')
             }
         elif self.interval_radio.isChecked():
             en_by_ch = {
@@ -40,12 +37,12 @@ class TimedReminderWidget(QDialog, Ui_Dialog):
                 u'分钟': 'minutes'
             }
             interval_text = self.interval_combo.currentText()
-            interval_time = self.interval_spin.text().strip()
+            interval_time = int(self.interval_spin.text().strip())
             if not interval_time:
                 return qflat.error(u'请设置间隔时间')
             self.data = {
                 'trigger': 'interval',
-                en_by_ch.get(interval_text): int(interval_time)
+                en_by_ch.get(interval_text): interval_time
             }
         elif self.cron_radio.isChecked():
             cron_text = self.cron_line_edit.text().strip()

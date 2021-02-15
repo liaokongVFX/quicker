@@ -115,7 +115,7 @@ class NotificationWindow(QListWidget):
 
     def __init__(self, *args, **kwargs):
         super(NotificationWindow, self).__init__(*args, **kwargs)
-        self.setSpacing(20)
+        self.setSpacing(12)
         self.setMinimumWidth(412)
         self.setMaximumWidth(412)
         QApplication.instance().setQuitOnLastWindowClosed(True)
