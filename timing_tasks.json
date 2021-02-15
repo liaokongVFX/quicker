@@ -1,7 +1,1 @@
-{
-    "6fad202e42024c10a5f871bfddde792c": {
-        "msg": "成功启动定时任务", 
-        "trigger": "interval", 
-        "minutes": 1
-    }
-}
+{}

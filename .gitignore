@@ -131,3 +131,5 @@ dmypy.json
 .pyre/
 
 .idea/
+
+secret_config.py
