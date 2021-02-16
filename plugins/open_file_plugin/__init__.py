@@ -13,14 +13,16 @@ class OpenFilePlugin(AbstractPlugin):
     description = u'通过路径或者关键字打开文件'
     shortcut = 'alt+Q'
 
+    # 常用软件
     path_by_name = {
         'code': 'D:/code',
         'work': 'D:/work',
         'py': 'D:/Program Files/JetBrains/PyCharm 2019.3.1/bin/pycharm64.exe',
-        'mu': 'E:/Program Files (x86)/Netease/CloudMusic/cloudmusic.exe'
+        'mu': 'E:/Program Files (x86)/Netease/CloudMusic/cloudmusic.exe',
+        'jsb': 'C:/Windows/system32/notepad.exe'
     }
 
-    def run(self, text, plugin_by_keyword):
+    def run(self, text, result_item, plugin_by_keyword):
         file_path = self.path_by_name.get(text)
         if not file_path:
             file_path = text.replace('\\', '/')

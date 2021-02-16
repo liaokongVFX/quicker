@@ -24,7 +24,7 @@ class Quicker(QWidget):
     def __init__(self, parent=None):
         super(Quicker, self).__init__(parent)
 
-        self.placeholder = u'请输入关键字'
+        self.placeholder = u'hello, Quicker!'
         self.RESULT_ITEM_HEIGHT = 62
         self.clipboard = QApplication.clipboard()
 
@@ -153,9 +153,12 @@ class Quicker(QWidget):
         if ' ' not in text.strip():
             plugin_keyword = text.strip()
             result_items = self.plugin_register.search_plugin(plugin_keyword)
-            self.add_items(result_items)
         else:
             plugin_keyword, query_str = text.strip().split(' ', 1)
+            result_items = self.plugin_register.get_query_result(plugin_keyword, query_str)
+
+        if result_items:
+            self.add_items(result_items)
 
     def update_result_list_height(self, result_items_num):
         # list高度需要根据数据个数自动调整
@@ -198,6 +201,11 @@ class Quicker(QWidget):
     def result_list_key_press_event(self, event):
         if event.key() == Qt.Key_Return:
             return self.execute_result_item(self.result_list_widget.currentItem())
+        if event.key() == Qt.Key_Backspace:
+            self.input_line_edit.setFocus(Qt.MouseFocusReason)
+            self.result_list_widget.setCurrentRow(-1)
+            self.input_line_edit.setText(self.input_line_edit.text()[:-1])
+            return
 
         super(QListWidget, self.result_list_widget).keyPressEvent(event)
 
@@ -233,7 +241,12 @@ class Quicker(QWidget):
         if not plugin_keyword:
             return
 
-        result_items = self.plugin_register.execute(plugin_keyword, execute_str, self.plugin_register.plugins())
+        result_item = None
+        if self.result_list_widget.selectedItems():
+            result_item = self.result_list_widget.itemWidget(self.result_list_widget.currentItem())
+        result_items = self.plugin_register.execute(
+            plugin_keyword, execute_str, result_item, self.plugin_register.plugins()
+        )
 
         if not result_items:
             self.close()
@@ -271,6 +284,8 @@ class Quicker(QWidget):
     def set_visible(self):
         if self.isVisible():
             self.input_line_edit.setText('')
+            self.result_list_widget.clear()
+            self.update_result_list_height(0)
             self.setVisible(False)
         else:
             self.set_show()

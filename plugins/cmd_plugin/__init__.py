@@ -13,7 +13,7 @@ class CmdPlugin(AbstractPlugin):
     keyword = 'cmd'
     description = u'执行CMD命令'
 
-    def run(self, text, plugin_by_keyword):
+    def run(self, text, result_item, plugin_by_keyword):
         os.system('start cmd /k {}'.format(text))
 
 

@@ -14,7 +14,7 @@ class AbstractPlugin(core.AbstractBase):
     main_window = None  # 这个值不需要初始化，在插件加载时，会自动设置为全局Quicker对象
     _verify_fields = ['title', 'keyword', 'description']
 
-    def run(self, text, plugin_by_keyword):
+    def run(self, text, result_item, plugin_by_keyword):
         raise NotImplementedError
 
     def query(self, text):

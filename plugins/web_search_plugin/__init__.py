@@ -10,7 +10,7 @@ from core.plugin_base import AbstractPlugin
 class WebSearchPlugin(AbstractPlugin):
     url_parse = ''
 
-    def run(self, text, plugin_by_keyword):
+    def run(self, text, result_item, plugin_by_keyword):
         webbrowser.open(self.url_parse.format(text))
 
 

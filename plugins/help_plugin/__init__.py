@@ -13,6 +13,6 @@ class HelpPlugin(AbstractPlugin):
     description = u'显示所有已加载的插件'
     close_win = False
 
-    def run(self, text, plugin_by_keyword):
+    def run(self, text, result_item, plugin_by_keyword):
         return [ResultItem(o.title, o.description, o.keyword, o.icon_path)
                 for o in sorted(plugin_by_keyword.values(), key=lambda x: x.keyword)]

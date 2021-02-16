@@ -15,7 +15,7 @@ class ScreenshotPlugin(AbstractPlugin):
     keyword = 'scr'
     description = u'截图功能，只输入scr会截图到剪切板，如果输入scr s可以保存截图'
 
-    def run(self, text, plugin_by_keyword):
+    def run(self, text, result_item, plugin_by_keyword):
         if os.name == 'nt':
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW

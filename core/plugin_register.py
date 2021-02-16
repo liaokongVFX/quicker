@@ -54,8 +54,14 @@ class PluginRegister(object):
                 for k, o in sorted(self._plugins_storage.items(), key=lambda x: x[0])
                 if text in k]
 
-    def execute(self, keyword, execute_str, plugin_by_keyword):
-        return self._plugins_storage[keyword].run(execute_str, plugin_by_keyword)
+    def get_query_result(self, keyword, text):
+        query = self._plugins_storage.get(keyword)
+        if query:
+            return query.query(text)
+        return []
+
+    def execute(self, keyword, execute_str, result_item, plugin_by_keyword):
+        return self._plugins_storage[keyword].run(execute_str, result_item, plugin_by_keyword)
 
     def get_plugin(self, keyword):
         return self._plugins_storage.get(keyword)

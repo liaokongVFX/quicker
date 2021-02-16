@@ -42,7 +42,7 @@ class PickColorWidget(QDialog):
         self.update()
 
     def init_ui(self):
-        self.setWindowTitle(u'按P键拾取鼠标所在位置颜色')
+        self.setWindowTitle(u'按{}键拾取鼠标所在位置颜色'.format(shortcut))
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.resize(QSize(300, 100))
         self.setFocusPolicy(Qt.ClickFocus)
