@@ -4,7 +4,7 @@
 
 ## 简介
 这个项目是一个类似于wox的快捷启动器。
-项目使用python2.7构建，依赖了`PySide2`、`Apscheduler`、`requests`三个第三方库需要使用`pip`进行安装。
+项目使用python2.7构建，依赖了`PySide2`、`Apscheduler`、`requests`三个第三方库,需要使用`pip`进行安装。
 
 ## 插件说明
 1.translation action 是基于百度的api开发的，所以需要在secret_config中进行相关的api配置
@@ -25,8 +25,8 @@ class EverythingPlugin(AbstractPlugin):  # 插件需要继承AbstractPlugin父�
     title = u'搜索文件'     # 插件的名称（必填）
     description = u'需要打开everthing才能使用'  # 插件的描述（必填）
     keyword = 'find'    # 插件的关键字（必填）
-    icon = ''   # 插件对应的图标路径，使用相对路径即可，比如这个包下面的img放了对应的图标icon.png,只需要写做 icon = 'img/icon.png'（选填）
-    shortcut = ''  # 插件对应的快捷键 # 选填
+    icon = ''   # 插件对应的图标路径（选填），使用相对路径即可，比如这个包下面的img放了对应的图标icon.png,只需要写做 icon = 'img/icon.png'
+    shortcut = ''  # 插件对应的快捷键 (选填)
 
     def run(self, text, result_item, plugin_by_keyword):
         """
@@ -47,7 +47,31 @@ class EverythingPlugin(AbstractPlugin):  # 插件需要继承AbstractPlugin父�
         Returns: 这里只能返回两种情况，一种是什么也不返回，一种是返回ResultItem列表，返回ResultItem列表会被展示到下拉菜单中
         """
         pass
+```
 
+# action插件
+首先在`actions`文件夹下建一个你插件名称的带有__init__.py文件的python包，
+然后在包中的`__init__.py`文件写入入口类：
+```python
+from core import register
+from core.action_base import AbstractAction, TEXT
+
+@register
+class TranslationAction(AbstractAction):
+    title = ''  # 插件名称（必填）
+    description = ''    # 插件描述(必填)
+    action_types = []   # 插件类型(必填)，也就是当什么时候来显示这个插件，这里分为4种，EMPTY(什么都不选)/TEXT（选中文字）/MULT_FILES（选中多个文件）/FILE（选中单个文件），
+                        # 比如我的这个插件需要在什么都不选，或者选中文字的时候显示，那么action_types = [EMPTY, TEXT]
+    exts = []   # 处理什么类型后缀的文件（选填），这个选项只在action_types中设置了FILE的时候起作用
+    icon = ''    # 插件对应的图标路径（选填），使用相对路径即可，比如这个包下面的img放了对应的图标icon.png,只需要写做 icon = 'img/icon.png'
+
+    def run(self, data):
+        """
+        必须实现的方法,这个方法会在插件被点击时执行
+        Args:
+            data: 当什么也不选时，这个值为空;当选择文字时，这个值就是选中的文字;当选中文件时，这个值就是文件路径列表
+        """
+        pass
 ```
 
 
