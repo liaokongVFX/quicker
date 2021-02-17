@@ -49,7 +49,7 @@ class EverythingPlugin(AbstractPlugin):  # 插件需要继承AbstractPlugin父�
         pass
 ```
 
-## action插件
+### action插件
 首先在`actions`文件夹下建一个你插件名称的带有__init__.py文件的python包，
 然后在包中的`__init__.py`文件写入入口类：
 ```python
@@ -75,7 +75,7 @@ class TranslationAction(AbstractAction):
         pass
 ```
 
-# 未来会实现的
+## 未来会实现的
 Plugin TODO
 - [x] 添加网页搜索插件
 - [x] 添加执行cmd命令插件
