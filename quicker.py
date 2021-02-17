@@ -244,6 +244,8 @@ class Quicker(QWidget):
         result_item = None
         if self.result_list_widget.selectedItems():
             result_item = self.result_list_widget.itemWidget(self.result_list_widget.currentItem())
+        elif self.result_list_widget.count() == 1:
+            result_item = self.result_list_widget.itemWidget(self.result_list_widget.item(0))
         result_items = self.plugin_register.execute(
             plugin_keyword, execute_str, result_item, self.plugin_register.plugins()
         )
