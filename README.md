@@ -60,7 +60,8 @@ from core.action_base import AbstractAction, TEXT
 class TranslationAction(AbstractAction):
     title = ''  # 插件名称（必填）
     description = ''    # 插件描述(必填)
-    action_types = []   # 插件类型(必填)，也就是当什么时候来显示这个插件，这里分为4种，EMPTY(什么都不选)/TEXT（选中文字）/MULT_FILES（选中多个文件）/FILE（选中单个文件），
+    action_types = []   # 插件类型(必填)，也就是当什么时候来显示这个插件，
+                        # 这里分为4种，EMPTY(什么都不选)/TEXT（选中文字）/MULT_FILES（选中多个文件）/FILE（选中单个文件），
                         # 比如我的这个插件需要在什么都不选，或者选中文字的时候显示，那么action_types = [EMPTY, TEXT]
     exts = []   # 处理什么类型后缀的文件（选填），这个选项只在action_types中设置了FILE的时候起作用
     icon = ''    # 插件对应的图标路径（选填），使用相对路径即可，比如这个包下面的img放了对应的图标icon.png,只需要写做 icon = 'img/icon.png'
